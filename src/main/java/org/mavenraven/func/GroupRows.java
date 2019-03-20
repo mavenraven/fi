@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-public class RowGrouper implements Function<List<Row>, List<List<Row>>> {
+public class GroupRows implements Function<List<Row>, List<List<Row>>> {
     public List<List<Row>> apply(List<Row> rows) {
         var outside = new ArrayList<List<Row>>();
         var inside = new ArrayList<Row>();

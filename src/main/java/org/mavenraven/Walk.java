@@ -4,12 +4,12 @@ import com.mapbox.geojson.LineString;
 
 import java.time.Duration;
 
-public class LineStringWithMetadata {
+public class Walk {
     private LineString lineString;
     private double distanceTraveled;
     private Duration totalTime;
 
-    public LineStringWithMetadata(LineString lineString, double distanceTraveled, Duration totalTime) {
+    public Walk(LineString lineString, double distanceTraveled, Duration totalTime) {
         this.lineString = lineString;
         this.distanceTraveled = distanceTraveled;
         this.totalTime = totalTime;
@@ -19,7 +19,7 @@ public class LineStringWithMetadata {
         return lineString;
     }
 
-    public double getDistanceTraveled() {
+    public double getDistanceTraveledInMeters() {
         return distanceTraveled;
     }
 

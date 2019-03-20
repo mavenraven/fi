@@ -3,7 +3,7 @@ package org.mavenraven.func;
 import com.mapbox.geojson.Point;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mavenraven.LineStringWithMetadata;
+import org.mavenraven.Walk;
 import org.mavenraven.Row;
 
 import java.time.Duration;
@@ -13,10 +13,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class RowsToLineStringWithMetadataTest {
+class ConvertRowsToWalkTest {
 
     private List<Row> rows;
-    private LineStringWithMetadata result;
+    private Walk result;
     private Row r1;
 
     @BeforeEach
@@ -29,7 +29,7 @@ class RowsToLineStringWithMetadataTest {
                 OffsetDateTime.of(1, 1, 1, 2, 30, 0, 0, ZoneOffset.UTC));
 
         rows = List.of(r1, r2, r3);
-        result = new RowsToLineStringWithMetadata().apply(rows);
+        result = new ConvertRowsToWalk().apply(rows);
     }
 
     @Test
@@ -52,7 +52,7 @@ class RowsToLineStringWithMetadataTest {
     @Test
     void itThrowsIfThereAreLessThanTwoPoints() {
         assertThrows(IllegalArgumentException.class, () -> {
-            new RowsToLineStringWithMetadata().apply(List.of(r1));
+            new ConvertRowsToWalk().apply(List.of(r1));
         });
     }
 
@@ -60,7 +60,7 @@ class RowsToLineStringWithMetadataTest {
     void itCalculatesTheTotalDistance() {
         // using https://andrew.hedges.name/experiments/haversine/ for expected
         var totalInM = (0.221 + 0.22) * 1000;
-        assertEquals(totalInM, result.getDistanceTraveled(), 1);
+        assertEquals(totalInM, result.getDistanceTraveledInMeters(), 1);
     }
 
     @Test

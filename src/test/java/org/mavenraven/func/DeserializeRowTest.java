@@ -12,7 +12,7 @@ import java.time.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class RowDeserializerTest {
+class DeserializeRowTest {
 
     private CSVRecord record;
 
@@ -25,7 +25,7 @@ class RowDeserializerTest {
 
     @Test
     void itTranslatesACSVRecordToAPointWithDateTimeObject() {
-        Row result = new RowDeserializer().apply(record);
+        Row result = new DeserializeRow().apply(record);
         assertAll(() -> {
             assertEquals(OffsetDateTime.of(2018, 3, 13, 21, 15, 01, 0, ZoneOffset.ofHours(-5)), result.getDateTime());
         }, () -> {

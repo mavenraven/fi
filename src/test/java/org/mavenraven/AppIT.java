@@ -47,6 +47,7 @@ public class AppIT {
 
         var resultOutput = IOUtils.toString(new BufferedReader(new InputStreamReader(proc.getInputStream())));
         var resultError = IOUtils.toString(new BufferedReader(new InputStreamReader(proc.getErrorStream())));
+        System.out.println("result output: " + resultOutput);
 
         assertThat("error output: " + resultError, resultOutput, containsString("Hello World!"));
     }

@@ -2,23 +2,16 @@ package org.mavenraven;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
-import com.mapbox.api.staticmap.v1.MapboxStaticMap;
-import com.mapbox.geojson.LineString;
-import com.vividsolutions.jts.geom.Geometry;
 import org.apache.commons.csv.CSVFormat;
-import org.mavenraven.func.CSVToGroupedRows;
-import org.mavenraven.func.RowGrouper;
-import org.mavenraven.func.RowDeserializer;
+import org.mavenraven.func.*;
 
+import javax.imageio.ImageIO;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.stream.Collectors;
 
-/**
- * Hello world!
- *
- */
 public class App {
     public static void main(String[] argv) {
         Args args = new Args();
@@ -32,21 +25,23 @@ public class App {
             System.exit(1);
         }
 
-        var csvToGroupedRows = new CSVToGroupedRows(new RowGrouper(), new RowDeserializer());
+        var csvToGroupedRows = new CSVToGroupedRows(new GroupRows(), new DeserializeRow());
+        var rowsToWalk = new ConvertRowsToWalk();
+        var getMapUrlForWalk = new GetMapUrlForWalk(args.mapboxAccessToken);
+        var createMapImage = new CreateMapImage(getMapUrlForWalk);
 
         try {
             Reader in = new FileReader(args.csvFileLocation);
             var parsed = CSVFormat.DEFAULT.withDelimiter(';').withHeader().parse(in);
-            var grouped = csvToGroupedRows.apply(parsed);
-            /*
-             * var grouped = new RowGrouper().apply( parsed.getRecords().stream().map(new
-             * RowDeserializer()).collect(Collectors.toList())); var lineStrings = grouped.stream().map(x ->
-             * LineString.fromLngLats(x)).collect(Collectors.toList()); var map =
-             * MapboxStaticMap.builder().accessToken(args.mapboxAccessToken).geoJson(lineStrings.get(3))
-             * .cameraPoint(lineStrings.get(3).coordinates().get(0)).height(1024).width(1024).retina(true)
-             * .cameraAuto(true).logo(false).build(); var url = map.url();
-             */
-            int x = 1;
+            var groups = csvToGroupedRows.apply(parsed);
+            var walks = groups.stream().map(rowsToWalk).collect(Collectors.toList());
+            for (var walk : walks) {
+                var image = createMapImage.apply(walk);
+                var file = File.createTempFile("map", ".png");
+                ImageIO.write(image, "png", file);
+                System.out.println(file.getAbsolutePath());
+            }
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

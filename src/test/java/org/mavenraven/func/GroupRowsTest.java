@@ -10,7 +10,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class RowGrouperTest {
+class GroupRowsTest {
 
     private List<Row> rows;
 
@@ -33,7 +33,7 @@ class RowGrouperTest {
 
     @Test
     void itGroupsSeparatelyIfThereIsMoreThanAnHourBetweenRows() {
-        List<List<Row>> result = new RowGrouper().apply(rows);
+        List<List<Row>> result = new GroupRows().apply(rows);
 
         assertAll(() -> {
             assertEquals(3, result.get(0).size());
