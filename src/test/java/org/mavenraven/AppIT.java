@@ -1,13 +1,18 @@
 package org.mavenraven;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.StringWriter;
 import java.nio.file.Paths;
 
 public class AppIT {
@@ -40,7 +45,10 @@ public class AppIT {
         Process proc = rt.exec(commands);
 
         BufferedReader resultOutput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-        String line = resultOutput.readLine();
-        assertEquals("Hello World!", line);
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(resultOutput, writer);
+        String output = writer.toString();
+
+        assertThat(output, containsString("Hello World!"));
     }
 }
