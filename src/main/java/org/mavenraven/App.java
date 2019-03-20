@@ -4,7 +4,9 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import com.mapbox.api.staticmap.v1.MapboxStaticMap;
 import com.mapbox.geojson.LineString;
+import com.vividsolutions.jts.geom.Geometry;
 import org.apache.commons.csv.CSVFormat;
+import org.mavenraven.func.CSVToGroupedRows;
 import org.mavenraven.func.RowGrouper;
 import org.mavenraven.func.RowDeserializer;
 
@@ -30,9 +32,12 @@ public class App {
             System.exit(1);
         }
 
+        var csvToGroupedRows = new CSVToGroupedRows(new RowGrouper(), new RowDeserializer());
+
         try {
             Reader in = new FileReader(args.csvFileLocation);
             var parsed = CSVFormat.DEFAULT.withDelimiter(';').withHeader().parse(in);
+            var grouped = csvToGroupedRows.apply(parsed);
             /*
              * var grouped = new RowGrouper().apply( parsed.getRecords().stream().map(new
              * RowDeserializer()).collect(Collectors.toList())); var lineStrings = grouped.stream().map(x ->
