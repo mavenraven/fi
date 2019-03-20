@@ -25,7 +25,8 @@ public class AppIT {
     public void beforeEach() {
         String buildDir = System.getProperty("buildDirectory");
         String jarName = System.getProperty("jarName");
-        String testSourceDir = System.getProperty("testSourceDirectory");
+        String baseDir = System.getProperty("baseDir");
+        String testSourceDir = Paths.get(baseDir, "src", "test").toString();
         String csvFixtureName = System.getProperty("csvFixtureName");
 
         mapboxAccessToken = System.getProperty("mapboxAccessToken");
