@@ -1,4 +1,4 @@
-package mavenraven.org;
+package org.mavenraven;
 
 /**
  * Hello world!

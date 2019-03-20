@@ -1,4 +1,4 @@
-package mavenraven.org;
+package org.mavenraven;
 
 import static org.junit.Assert.assertTrue;
 

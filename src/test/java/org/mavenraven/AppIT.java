@@ -1,4 +1,4 @@
-package mavenraven.org;
+package org.mavenraven;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;

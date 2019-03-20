@@ -1,4 +1,4 @@
-package mavenraven.org;
+package org.mavenraven;
 
 import com.beust.jcommander.Parameter;
 
