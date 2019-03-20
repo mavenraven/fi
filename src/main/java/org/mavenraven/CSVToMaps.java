@@ -2,25 +2,22 @@ package org.mavenraven;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
-import org.apache.commons.csv.CSVFormat;
 import org.mavenraven.func.*;
 
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Collectors;
 
-public class App {
+public class CSVToMaps {
     public static void main(String[] argv) {
         Args args = new Args();
 
         JCommander jCommander = JCommander.newBuilder().addObject(args).build();
-        jCommander.setProgramName(App.class.getSimpleName());
+        jCommander.setProgramName(CSVToMaps.class.getSimpleName());
         try {
             jCommander.parse(argv);
         } catch (ParameterException e) {

@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.io.*;
 import java.nio.file.Paths;
 
-public class AppIT {
+public class CSVToMapsIT {
 
     private String jarPath;
     private String csvFileLocation;
@@ -40,7 +40,7 @@ public class AppIT {
     }
 
     @Test
-    public void itRunsTheCli() throws IOException {
+    public void itOutputsTheExpectedMap() throws IOException {
         var rt = Runtime.getRuntime();
         String[] commands = { "java", "-jar", jarPath, "--mapboxAccessToken", mapboxAccessToken, "--csvFileLocation",
                 csvFileLocation };
