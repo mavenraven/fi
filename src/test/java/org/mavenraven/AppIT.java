@@ -20,9 +20,10 @@ public class AppIT {
         String buildDir = System.getProperty("buildDirectory");
         String jarName = System.getProperty("jarName");
         String testSourceDir = System.getProperty("testSourceDirectory");
+        String csvFixtureName = System.getProperty("csvFixtureName");
 
         jarPath = Paths.get(buildDir, jarName).toString();
-        csvFileLocation = Paths.get(testSourceDir, "resources", "gps_dataset.csv").toString();
+        csvFileLocation = Paths.get(testSourceDir, "resources", csvFixtureName).toString();
     }
 
     @Test

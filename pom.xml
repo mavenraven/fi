@@ -94,6 +94,7 @@
             <buildDirectory>${project.build.directory}</buildDirectory>
             <jarName>${project.artifactId}-${project.version}.jar</jarName>
             <testSourceDirectory>${project.build.testSourceDirectory}</testSourceDirectory>
+            <csvFixtureName>gps_dataset.csv</csvFixtureName>
           </systemPropertyVariables>
         </configuration>
       </plugin>
