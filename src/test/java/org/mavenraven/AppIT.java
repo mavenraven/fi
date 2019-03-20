@@ -23,11 +23,11 @@ public class AppIT {
 
     @BeforeEach
     public void beforeEach() {
-        String buildDir = System.getProperty("buildDirectory");
-        String jarName = System.getProperty("jarName");
-        String baseDir = System.getProperty("baseDir");
-        String testSourceDir = Paths.get(baseDir, "src", "test").toString();
-        String csvFixtureName = System.getProperty("csvFixtureName");
+        var buildDir = System.getProperty("buildDirectory");
+        var jarName = System.getProperty("jarName");
+        var baseDir = System.getProperty("baseDir");
+        var testSourceDir = Paths.get(baseDir, "src", "test").toString();
+        var csvFixtureName = System.getProperty("csvFixtureName");
 
         mapboxAccessToken = System.getProperty("mapboxAccessToken");
         if (mapboxAccessToken == null) {
@@ -40,13 +40,13 @@ public class AppIT {
 
     @Test
     public void itRunsTheCli() throws IOException {
-        Runtime rt = Runtime.getRuntime();
+        var rt = Runtime.getRuntime();
         String[] commands = { "java", "-jar", jarPath, "--mapboxAccessToken", mapboxAccessToken, "--csvFileLocation",
                 csvFileLocation };
-        Process proc = rt.exec(commands);
+        var proc = rt.exec(commands);
 
-        String resultOutput = IOUtils.toString(new BufferedReader(new InputStreamReader(proc.getInputStream())));
-        String resultError = IOUtils.toString(new BufferedReader(new InputStreamReader(proc.getErrorStream())));
+        var resultOutput = IOUtils.toString(new BufferedReader(new InputStreamReader(proc.getInputStream())));
+        var resultError = IOUtils.toString(new BufferedReader(new InputStreamReader(proc.getErrorStream())));
 
         assertThat("error output: " + resultError, resultOutput, containsString("Hello World!"));
     }

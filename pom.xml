@@ -30,6 +30,11 @@
       <version>1.72</version>
     </dependency>
     <dependency>
+      <groupId>org.jooq</groupId>
+      <artifactId>jool</artifactId>
+      <version>0.9.13</version>
+    </dependency>
+    <dependency>
       <groupId>com.mapbox.mapboxsdk</groupId>
       <artifactId>mapbox-sdk-services</artifactId>
       <version>4.5.0</version>

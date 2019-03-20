@@ -2,23 +2,15 @@ package org.mavenraven;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
-import com.google.gson.Gson;
 import com.mapbox.api.staticmap.v1.MapboxStaticMap;
-import com.mapbox.api.staticmap.v1.models.StaticMarkerAnnotation;
-import com.mapbox.api.staticmap.v1.models.StaticPolylineAnnotation;
-import com.mapbox.core.utils.MapboxUtils;
-import com.mapbox.geojson.GeoJson;
 import com.mapbox.geojson.LineString;
-import com.mapbox.geojson.Point;
-import okhttp3.HttpUrl;
 import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
+import org.mavenraven.func.RowGrouper;
+import org.mavenraven.func.RowDeserializer;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -40,30 +32,18 @@ public class App {
 
         try {
             Reader in = new FileReader(args.csvFileLocation);
-            try {
-                CSVParser parsed = CSVFormat.DEFAULT.withDelimiter(';').withHeader().parse(in);
-                List<List<Point>> grouped = GroupPoints.exec(parsed.getRecords().stream()
-                        .map(x -> ToPointWithDateTime.exec(x)).collect(Collectors.toList()));
-                List<LineString> lineStrings = grouped.stream().map(x -> LineString.fromLngLats(x))
-                        .collect(Collectors.toList());
-                MapboxStaticMap map = MapboxStaticMap.builder().accessToken(args.mapboxAccessToken)
-                        .geoJson(lineStrings.get(3)).cameraPoint(lineStrings.get(3).coordinates().get(0)).height(1024)
-                        .width(1024).retina(true).cameraAuto(true).logo(false).build();
-                HttpUrl url = map.url();
-                int x = 1;
-            } catch (IOException e) {
-                System.err.println("Unable to parse CSV file: " + e.getMessage());
-                System.exit(1);
-            } finally {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                }
-            }
-
-        } catch (FileNotFoundException e) {
-            System.err.println(args.csvFileLocation + " not found.");
-            System.exit(1);
+            var parsed = CSVFormat.DEFAULT.withDelimiter(';').withHeader().parse(in);
+            /*
+             * var grouped = new RowGrouper().apply( parsed.getRecords().stream().map(new
+             * RowDeserializer()).collect(Collectors.toList())); var lineStrings = grouped.stream().map(x ->
+             * LineString.fromLngLats(x)).collect(Collectors.toList()); var map =
+             * MapboxStaticMap.builder().accessToken(args.mapboxAccessToken).geoJson(lineStrings.get(3))
+             * .cameraPoint(lineStrings.get(3).coordinates().get(0)).height(1024).width(1024).retina(true)
+             * .cameraAuto(true).logo(false).build(); var url = map.url();
+             */
+            int x = 1;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
         System.out.println("Hello World!");

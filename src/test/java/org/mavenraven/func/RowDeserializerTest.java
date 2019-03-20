@@ -1,17 +1,18 @@
-package org.mavenraven;
+package org.mavenraven.func;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mavenraven.Row;
 
 import java.io.IOException;
 import java.time.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ToPointWithDateTimeTest {
+class RowDeserializerTest {
 
     private CSVRecord record;
 
@@ -24,7 +25,7 @@ class ToPointWithDateTimeTest {
 
     @Test
     void itTranslatesACSVRecordToAPointWithDateTimeObject() {
-        PointWithDateTime result = ToPointWithDateTime.exec(record);
+        Row result = new RowDeserializer().apply(record);
         assertAll(() -> {
             assertEquals(OffsetDateTime.of(2018, 3, 13, 21, 15, 01, 0, ZoneOffset.ofHours(-5)), result.getDateTime());
         }, () -> {

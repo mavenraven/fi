@@ -1,21 +1,23 @@
-package org.mavenraven;
+package org.mavenraven.func;
 
 import com.mapbox.geojson.Point;
+import org.mavenraven.Row;
 
 import java.time.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
-public class GroupPoints {
-    public static List<List<Point>> exec(List<PointWithDateTime> points) {
-        ArrayList<List<Point>> outside = new ArrayList<>();
-        ArrayList<Point> inside = new ArrayList<>();
+public class RowGrouper implements Function<List<Row>, List<List<Row>>> {
+    public List<List<Row>> apply(List<Row> rows) {
+        var outside = new ArrayList<List<Row>>();
+        var inside = new ArrayList<Row>();
         outside.add(inside);
 
         OffsetDateTime last = null;
 
-        for (PointWithDateTime pwd : points) {
-            OffsetDateTime current = pwd.getDateTime();
+        for (Row row : rows) {
+            var current = row.getDateTime();
             if (last == null) {
                 last = current;
             }
@@ -26,7 +28,7 @@ public class GroupPoints {
                 outside.add(inside);
             }
 
-            inside.add(pwd.getPoint());
+            inside.add(row);
             last = current;
         }
 

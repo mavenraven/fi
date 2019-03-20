@@ -6,11 +6,11 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 
-public class PointWithDateTime {
+public class Row {
     private Point point;
     private OffsetDateTime dateTime;
 
-    public PointWithDateTime(Point point, OffsetDateTime dateTime) {
+    public Row(Point point, OffsetDateTime dateTime) {
         this.point = point;
         this.dateTime = dateTime;
     }
