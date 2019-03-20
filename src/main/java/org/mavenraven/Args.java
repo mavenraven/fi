@@ -3,10 +3,11 @@ package org.mavenraven;
 import com.beust.jcommander.Parameter;
 
 public class Args {
-    @Parameter(names = {
-            "-mapboxAccessToken" }, description = "See https://docs.mapbox.com/help/how-mapbox-works/access-tokens/")
+    @Parameter(required = true, names = {
+            "--mapboxAccessToken" }, description = "See https://docs.mapbox.com/help/how-mapbox-works/access-tokens/")
     private String mapboxAccessToken;
 
-    @Parameter(description = "input CSV file location")
+    @Parameter(required = true, description = "<input CSV file location>")
     private String csvFileLocation;
+
 }
