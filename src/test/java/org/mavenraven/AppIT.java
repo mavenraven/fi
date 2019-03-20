@@ -44,11 +44,9 @@ public class AppIT {
                 csvFileLocation };
         Process proc = rt.exec(commands);
 
-        BufferedReader resultOutput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-        StringWriter writer = new StringWriter();
-        IOUtils.copy(resultOutput, writer);
-        String output = writer.toString();
+        String resultOutput = IOUtils.toString(new BufferedReader(new InputStreamReader(proc.getInputStream())));
+        String resultError = IOUtils.toString(new BufferedReader(new InputStreamReader(proc.getErrorStream())));
 
-        assertThat(output, containsString("Hello World!"));
+        assertThat("error output: " + resultError, resultOutput, containsString("Hello World!"));
     }
 }
