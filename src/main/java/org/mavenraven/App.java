@@ -10,6 +10,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.stream.Collectors;
 
 public class App {
@@ -35,17 +38,20 @@ public class App {
             var in = new FileReader(args.csvFileLocation);
             var rows = getRowsFromFile.apply(in);
             var groups = groupRows.apply(rows);
-            var walks = groups.stream().map(convertRowsToWalk);
-            walks.forEach(walk -> {
-                try {
-                    var image = createMapImage.apply(walk);
-                    var file = File.createTempFile("map", ".png");
-                    ImageIO.write(image, "png", file);
-                    System.out.println(file.getAbsolutePath());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
+            var walks = groups.stream().map(convertRowsToWalk).collect(Collectors.toList());
+
+            int i = 1;
+            var tmpDir = Files.createTempDirectory("fi").toString();
+            for (var walk : walks) {
+                var image = createMapImage.apply(walk);
+
+                var filePath = Paths.get(tmpDir, "map" + i + ".png").toString();
+                i++;
+
+                var file = new File(filePath);
+                ImageIO.write(image, "png", file);
+                System.out.println(file.getAbsolutePath());
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
