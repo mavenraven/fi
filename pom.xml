@@ -89,6 +89,12 @@
             </goals>
           </execution>
         </executions>
+        <configuration>
+          <systemPropertyVariables>
+            <buildDirectory>${project.build.directory}</buildDirectory>
+            <jarName>${project.artifactId}-${project.version}.jar</jarName>
+          </systemPropertyVariables>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
