@@ -20,6 +20,11 @@
       <version>1.6</version>
     </dependency>
     <dependency>
+      <groupId>com.github.filosganga</groupId>
+      <artifactId>geogson-jts</artifactId>
+      <version>1.2.21</version>
+    </dependency>
+    <dependency>
       <groupId>com.beust</groupId>
       <artifactId>jcommander</artifactId>
       <version>1.72</version>
@@ -58,11 +63,6 @@
       <artifactId>junit-platform-runner</artifactId>
       <version>${junit.platform.version}</version>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.github.filosganga</groupId>
-      <artifactId>geogson-jts</artifactId>
-      <version>1.2.21</version>
     </dependency>
   </dependencies>
   <build>

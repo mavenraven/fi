@@ -2,29 +2,24 @@ package org.mavenraven;
 
 import com.mapbox.geojson.Point;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZonedDateTime;
 
 public class PointWithDateTime {
     private Point point;
-    private LocalDate date;
-    private LocalTime time;
+    private OffsetDateTime dateTime;
 
-    public PointWithDateTime(Point point, LocalDate date, LocalTime time) {
+    public PointWithDateTime(Point point, OffsetDateTime dateTime) {
         this.point = point;
-        this.date = date;
-        this.time = time;
+        this.dateTime = dateTime;
     }
 
     public Point getPoint() {
         return point;
     }
 
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public LocalTime getTime() {
-        return time;
+    public OffsetDateTime getDateTime() {
+        return dateTime;
     }
 }
