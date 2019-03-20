@@ -34,6 +34,6 @@ public class AppIT {
 
         BufferedReader resultOutput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
         String line = resultOutput.readLine();
-        assertEquals(line, "Hello World!");
+        assertEquals("Hello World!", line);
     }
 }
