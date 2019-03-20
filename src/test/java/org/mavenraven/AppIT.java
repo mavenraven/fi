@@ -14,6 +14,7 @@ public class AppIT {
 
     private String jarPath;
     private String csvFileLocation;
+    private String mapboxAccessToken;
 
     @BeforeEach
     public void beforeEach() {
@@ -22,6 +23,11 @@ public class AppIT {
         String testSourceDir = System.getProperty("testSourceDirectory");
         String csvFixtureName = System.getProperty("csvFixtureName");
 
+        mapboxAccessToken = System.getProperty("mapboxAccessToken");
+        if (mapboxAccessToken == null) {
+            throw new RuntimeException("Use 'mvn verify -DmapboxAccessToken=<token>'");
+        }
+
         jarPath = Paths.get(buildDir, jarName).toString();
         csvFileLocation = Paths.get(testSourceDir, "resources", csvFixtureName).toString();
     }
@@ -29,7 +35,7 @@ public class AppIT {
     @Test
     public void itRunsTheCli() throws IOException {
         Runtime rt = Runtime.getRuntime();
-        String[] commands = { "java", "-jar", jarPath, csvFileLocation };
+        String[] commands = { "java", "-jar", jarPath, "--mapboxAccessToken", mapboxAccessToken, csvFileLocation };
         Process proc = rt.exec(commands);
 
         BufferedReader resultOutput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
