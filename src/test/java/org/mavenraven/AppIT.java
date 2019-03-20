@@ -35,7 +35,8 @@ public class AppIT {
     @Test
     public void itRunsTheCli() throws IOException {
         Runtime rt = Runtime.getRuntime();
-        String[] commands = { "java", "-jar", jarPath, "--mapboxAccessToken", mapboxAccessToken, csvFileLocation };
+        String[] commands = { "java", "-jar", jarPath, "--mapboxAccessToken", mapboxAccessToken, "--csvFileLocation",
+                csvFileLocation };
         Process proc = rt.exec(commands);
 
         BufferedReader resultOutput = new BufferedReader(new InputStreamReader(proc.getInputStream()));

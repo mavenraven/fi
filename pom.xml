@@ -53,6 +53,7 @@
       <plugin>
         <groupId>net.revelc.code.formatter</groupId>
         <artifactId>formatter-maven-plugin</artifactId>
+        <configuration
         <version>2.8.1</version>
         <executions>
           <execution>
