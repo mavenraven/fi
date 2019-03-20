@@ -3,8 +3,8 @@ package org.mavenraven.func;
 import com.jillesvangurp.geo.GeoGeometry;
 import com.mapbox.geojson.LineString;
 import com.mapbox.geojson.Point;
-import org.mavenraven.Walk;
 import org.mavenraven.Row;
+import org.mavenraven.Walk;
 
 import java.time.Duration;
 import java.util.List;

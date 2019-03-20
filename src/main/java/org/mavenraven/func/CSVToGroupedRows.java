@@ -1,7 +1,5 @@
 package org.mavenraven.func;
 
-import com.mapbox.geojson.LineString;
-import com.mapbox.geojson.Point;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.mavenraven.Row;

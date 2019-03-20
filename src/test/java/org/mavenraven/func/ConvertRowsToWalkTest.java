@@ -3,8 +3,8 @@ package org.mavenraven.func;
 import com.mapbox.geojson.Point;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mavenraven.Walk;
 import org.mavenraven.Row;
+import org.mavenraven.Walk;
 
 import java.time.Duration;
 import java.time.OffsetDateTime;

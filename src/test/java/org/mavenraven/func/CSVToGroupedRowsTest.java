@@ -13,7 +13,8 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.function.Function;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CSVToGroupedRowsTest {
 
