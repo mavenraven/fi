@@ -17,8 +17,11 @@ public class AppIT {
         String buildDir = System.getProperty("buildDirectory");
         String jarName = System.getProperty("jarName");
         String jarPath = Paths.get(buildDir, jarName).toString();
+        String testSourceDir = System.getProperty("testSourceDirectory");
+        String csvFileLocation = Paths.get(testSourceDir, "resources", "gps_dataset.csv").toString();
+
         Runtime rt = Runtime.getRuntime();
-        String[] commands = { "java", "-jar", jarPath };
+        String[] commands = { "java", "-jar", jarPath, csvFileLocation };
         Process proc = rt.exec(commands);
 
         BufferedReader resultOutput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
