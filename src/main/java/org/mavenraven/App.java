@@ -25,27 +25,29 @@ public class App {
             System.exit(1);
         }
 
-        var csvToGroupedRows = new CSVToGroupedRows(new GroupRows(), new DeserializeRow());
-        var rowsToWalk = new ConvertRowsToWalk();
+        var convertRowsToWalk = new ConvertRowsToWalk();
+        var groupRows = new GroupRows();
         var getMapUrlForWalk = new GetMapUrlForWalk(args.mapboxAccessToken);
         var createMapImage = new CreateMapImage(getMapUrlForWalk);
+        var getRowsFromFile = new GetRowsFromFile(new DeserializeRow());
 
         try {
-            Reader in = new FileReader(args.csvFileLocation);
-            var parsed = CSVFormat.DEFAULT.withDelimiter(';').withHeader().parse(in);
-            var groups = csvToGroupedRows.apply(parsed);
-            var walks = groups.stream().map(rowsToWalk).collect(Collectors.toList());
-            for (var walk : walks) {
-                var image = createMapImage.apply(walk);
-                var file = File.createTempFile("map", ".png");
-                ImageIO.write(image, "png", file);
-                System.out.println(file.getAbsolutePath());
-            }
-
+            var in = new FileReader(args.csvFileLocation);
+            var rows = getRowsFromFile.apply(in);
+            var groups = groupRows.apply(rows);
+            var walks = groups.stream().map(convertRowsToWalk);
+            walks.forEach(walk -> {
+                try {
+                    var image = createMapImage.apply(walk);
+                    var file = File.createTempFile("map", ".png");
+                    ImageIO.write(image, "png", file);
+                    System.out.println(file.getAbsolutePath());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-        System.out.println("Hello World!");
     }
 }
