@@ -45,6 +45,12 @@
       <version>4.5.0</version>
     </dependency>
     <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>1.12</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-io</artifactId>
       <version>1.3.2</version>
@@ -122,6 +128,7 @@
             <jarName>${project.artifactId}-${project.version}.jar</jarName>
             <baseDir>${project.basedir}</baseDir>
             <csvFixtureName>gps_dataset.csv</csvFixtureName>
+            <finishedMapFixtureName>finished_map.png</finishedMapFixtureName>
           </systemPropertyVariables>
         </configuration>
       </plugin>
