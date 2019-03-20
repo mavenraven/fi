@@ -59,6 +59,11 @@
       <version>${junit.platform.version}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.github.filosganga</groupId>
+      <artifactId>geogson-jts</artifactId>
+      <version>1.2.21</version>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

@@ -2,6 +2,10 @@ package org.mavenraven;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
+import com.google.gson.Gson;
+import com.mapbox.geojson.GeoJson;
+import com.mapbox.geojson.LineString;
+import com.mapbox.geojson.Point;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 
