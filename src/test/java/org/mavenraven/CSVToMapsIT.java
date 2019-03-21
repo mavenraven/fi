@@ -48,13 +48,14 @@ public class CSVToMapsIT {
 
         var resultOutput = IOUtils.toString(new BufferedReader(new InputStreamReader(proc.getInputStream())));
         var resultError = IOUtils.toString(new BufferedReader(new InputStreamReader(proc.getErrorStream())));
+        System.out.println("std output: " + resultOutput);
+        System.out.println("srd error: " + resultError);
         var firstFilePath = resultOutput.lines().findFirst().get();
         var inputStream = new FileInputStream(new File(firstFilePath));
         var actualHash = DigestUtils.sha512Hex(inputStream);
         var expectedHash = DigestUtils.sha512Hex(new FileInputStream((new File(finishedMapFileLocation))));
 
         assertEquals(expectedHash, actualHash,
-                "Hashes do not match. If the image rendering logic has changed, overwrite the fixture image. Error output: "
-                        + resultError);
+                "Hashes do not match. If the image rendering logic has changed, overwrite the fixture image.");
     }
 }
