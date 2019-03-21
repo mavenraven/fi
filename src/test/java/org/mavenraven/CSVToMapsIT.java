@@ -49,7 +49,7 @@ public class CSVToMapsIT {
         var resultOutput = IOUtils.toString(new BufferedReader(new InputStreamReader(proc.getInputStream())));
         var resultError = IOUtils.toString(new BufferedReader(new InputStreamReader(proc.getErrorStream())));
         System.out.println("std output: " + resultOutput);
-        System.out.println("srd error: " + resultError);
+        System.out.println("std error: " + resultError);
         var firstFilePath = resultOutput.lines().findFirst().get();
         var inputStream = new FileInputStream(new File(firstFilePath));
         var actualHash = DigestUtils.sha512Hex(inputStream);
