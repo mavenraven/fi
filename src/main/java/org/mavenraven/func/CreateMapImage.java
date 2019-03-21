@@ -32,7 +32,7 @@ public class CreateMapImage implements Function<Walk, BufferedImage> {
             graphics.setPaint(Color.black);
             graphics.setFont(new Font("Sans Serif", Font.PLAIN, 50));
             graphics.drawString("distance: " + distanceDisplayed + " km", 50, 100);
-            graphics.drawString("duration: " + durationDisplayed, 50, 200);
+            // graphics.drawString("duration: " + durationDisplayed, 50, 200);
             graphics.dispose();
             return image;
         } catch (IOException e) {
