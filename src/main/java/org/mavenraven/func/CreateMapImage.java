@@ -7,7 +7,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.function.Function;
 
@@ -32,7 +31,7 @@ public class CreateMapImage implements Function<Walk, BufferedImage> {
             graphics.setPaint(Color.black);
             graphics.setFont(new Font("Sans Serif", Font.PLAIN, 50));
             graphics.drawString("distance: " + distanceDisplayed + " km", 50, 100);
-            // graphics.drawString("duration: " + durationDisplayed, 50, 200);
+            graphics.drawString("duration: " + durationDisplayed, 50, 200);
             graphics.dispose();
             return image;
         } catch (IOException e) {

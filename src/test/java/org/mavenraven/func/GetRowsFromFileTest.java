@@ -1,7 +1,6 @@
 package org.mavenraven.func;
 
 import com.mapbox.geojson.Point;
-import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.junit.jupiter.api.BeforeEach;

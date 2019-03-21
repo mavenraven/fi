@@ -1,6 +1,5 @@
 package org.mavenraven;
 
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
@@ -15,9 +14,8 @@ import org.junit.jupiter.api.Test;
 import java.io.*;
 import java.nio.file.Paths;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
 
 public class CSVToMapsIT {
 
