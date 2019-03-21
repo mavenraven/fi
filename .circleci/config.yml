@@ -38,4 +38,8 @@ jobs:
           key: v1-dependencies-{{ checksum "pom.xml" }}
 
       # run tests!
-      - run: mvn integration-test
+      - run: 
+          name: run tests
+          command: |
+            set -e
+            ./mvnw verify
