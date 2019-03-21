@@ -38,7 +38,7 @@ public class CSVToMaps {
             var walks = groups.stream().map(convertRowsToWalk).collect(Collectors.toList());
 
             int i = 1;
-            var tmpDir = Files.createTempDirectory("fi").toString();
+            var tmpDir = Files.createTempDirectory("csvToMaps").toString();
             for (var walk : walks) {
                 var image = createMapImage.apply(walk);
 
