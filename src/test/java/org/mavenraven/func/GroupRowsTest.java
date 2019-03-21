@@ -14,12 +14,12 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class GroupRowsTest {
+public class GroupRowsTest {
 
     private List<Row> rows;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         Row r1 = new Row(Point.fromLngLat(1, -1),
                 OffsetDateTime.of(LocalDate.parse("2018-03-13"), LocalTime.parse("21:15:01"), ZoneOffset.ofHours(0)));
 
@@ -36,7 +36,7 @@ class GroupRowsTest {
     }
 
     @Test
-    void itGroupsSeparatelyIfThereIsMoreThanAnHourBetweenRows() {
+    public void itGroupsSeparatelyIfThereIsMoreThanAnHourBetweenRows() {
         List<List<Row>> result = new GroupRows().apply(rows);
 
         assertAll(() -> {

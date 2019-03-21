@@ -13,14 +13,14 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ConvertRowsToWalkTest {
+public class ConvertRowsToWalkTest {
 
     private List<Row> rows;
     private Walk result;
     private Row r1;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         r1 = new Row(Point.fromLngLat(-73.984135, 40.702452), OffsetDateTime.of(1, 1, 1, 1, 0, 0, 0, ZoneOffset.UTC));
         var r2 = new Row(Point.fromLngLat(-73.986720, 40.702794),
                 OffsetDateTime.of(1, 1, 1, 1, 30, 0, 0, ZoneOffset.UTC));
@@ -33,7 +33,7 @@ class ConvertRowsToWalkTest {
     }
 
     @Test
-    void itAddsAllPointsToLineString() {
+    public void itAddsAllPointsToLineString() {
         assertAll(() -> {
             assertEquals(40.702452, result.getLineString().coordinates().get(0).latitude());
         }, () -> {
@@ -50,21 +50,21 @@ class ConvertRowsToWalkTest {
     }
 
     @Test
-    void itThrowsIfThereAreLessThanTwoPoints() {
+    public void itThrowsIfThereAreLessThanTwoPoints() {
         assertThrows(IllegalArgumentException.class, () -> {
             new ConvertRowsToWalk().apply(List.of(r1));
         });
     }
 
     @Test
-    void itCalculatesTheTotalDistance() {
+    public void itCalculatesTheTotalDistance() {
         // using https://andrew.hedges.name/experiments/haversine/ for expected
         var totalInM = (0.221 + 0.22) * 1000;
         assertEquals(totalInM, result.getDistanceTraveledInMeters(), 1);
     }
 
     @Test
-    void itCalculatesTheTotalTime() {
+    public void itCalculatesTheTotalTime() {
         assertEquals(Duration.ofMinutes(90), result.getTotalTime());
     }
 }

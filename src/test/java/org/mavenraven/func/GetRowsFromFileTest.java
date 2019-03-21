@@ -17,7 +17,7 @@ import java.util.function.Function;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class GetRowsFromFileTest {
+public class GetRowsFromFileTest {
 
     private CSVParser csv;
     private Function<List<Row>, List<List<Row>>> grouper;
@@ -25,7 +25,7 @@ class GetRowsFromFileTest {
     private FileReader fileReader;
 
     @BeforeEach
-    void setUp() throws IOException {
+    public void setUp() throws IOException {
         String fileLocation = this.getClass().getClassLoader().getResource("gps_dataset.csv").getFile();
         fileReader = new FileReader(fileLocation);
         deserializer = (x) -> new Row(Point.fromLngLat(Double.parseDouble(x.get(2)), Double.parseDouble(x.get(1))),
@@ -34,7 +34,7 @@ class GetRowsFromFileTest {
     }
 
     @Test
-    void itDeserializesUsingPassedInFunction() {
+    public void itDeserializesUsingPassedInFunction() {
         var result = new GetRowsFromFile(deserializer).apply(fileReader);
 
         assertAll(() -> {
