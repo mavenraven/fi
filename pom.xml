@@ -33,6 +33,7 @@
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpmime</artifactId>
       <version>4.5.7</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.beust</groupId>
