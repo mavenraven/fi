@@ -42,4 +42,4 @@ jobs:
           name: run tests
           command: |
             set -e
-            ./mvnw verify -DmapboxAccessToken=$MAPBOX_ACCESS_TOKEN
+            ./mvnw verify -DmapboxAccessToken=$MAPBOX_ACCESS_TOKEN -DdeepAIApiKey=$DEEP_AI_API_KEY
