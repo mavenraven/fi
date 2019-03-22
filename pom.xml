@@ -107,6 +107,13 @@
             </goals>
           </execution>
         </executions>
+        <configuration>
+          <configFile>${project.basedir}/formatter-config.xml</configFile>
+          <overrideConfigCompilerVersion>true</overrideConfigCompilerVersion>
+          <compilerSource>${maven.compiler.source}</compilerSource>
+          <compilerCompliance>${maven.compiler.source}</compilerCompliance>
+          <compilerTargetPlatform>${maven.compiler.target}</compilerTargetPlatform>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

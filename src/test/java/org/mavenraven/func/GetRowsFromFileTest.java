@@ -18,28 +18,34 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class GetRowsFromFileTest {
 
-    private CSVParser csv;
-    private Function<List<Row>, List<List<Row>>> grouper;
-    private Function<CSVRecord, Row> deserializer;
-    private FileReader fileReader;
+	private CSVParser csv;
+	private Function<List<Row>, List<List<Row>>> grouper;
+	private Function<CSVRecord, Row> deserializer;
+	private FileReader fileReader;
 
-    @BeforeEach
-    public void setUp() throws IOException {
-        String fileLocation = this.getClass().getClassLoader().getResource("gps_dataset.csv").getFile();
-        fileReader = new FileReader(fileLocation);
-        deserializer = (x) -> new Row(Point.fromLngLat(Double.parseDouble(x.get(2)), Double.parseDouble(x.get(1))),
-                OffsetDateTime.now());
+	@BeforeEach
+	public void setUp() throws IOException {
+		String fileLocation = this.getClass()
+				.getClassLoader()
+				.getResource("gps_dataset.csv")
+				.getFile();
+		fileReader = new FileReader(fileLocation);
+		deserializer = (x) -> new Row(
+				Point.fromLngLat(
+						Double.parseDouble(x.get(2)),
+						Double.parseDouble(x.get(1))),
+				OffsetDateTime.now());
 
-    }
+	}
 
-    @Test
-    public void itDeserializesUsingPassedInFunction() {
-        var result = new GetRowsFromFile(deserializer).apply(fileReader);
+	@Test
+	public void itDeserializesUsingPassedInFunction() {
+		var result = new GetRowsFromFile(deserializer).apply(fileReader);
 
-        assertAll(() -> {
-            assertEquals(40.702452, result.get(0).getPoint().latitude());
-        }, () -> {
-            assertEquals(-73.984135, result.get(0).getPoint().longitude());
-        });
-    }
+		assertAll(() -> {
+			assertEquals(40.702452, result.get(0).getPoint().latitude());
+		}, () -> {
+			assertEquals(-73.984135, result.get(0).getPoint().longitude());
+		});
+	}
 }
