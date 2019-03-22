@@ -10,19 +10,24 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class GetRowsFromFile implements Function<FileReader, List<Row>> {
-  private final Function<CSVRecord, Row> rowDeserializer;
+    private final Function<CSVRecord, Row> rowDeserializer;
 
-  public GetRowsFromFile(Function<CSVRecord, Row> rowDeserializer) {
-    this.rowDeserializer = rowDeserializer;
-  }
-
-  @Override
-  public List<Row> apply(FileReader fileReader) {
-    try {
-      var parsed = CSVFormat.DEFAULT.withDelimiter(';').withHeader().parse(fileReader);
-      return parsed.getRecords().stream().map(rowDeserializer).collect(Collectors.toList());
-    } catch (IOException e) {
-      throw new RuntimeException(e);
+    public GetRowsFromFile(Function<CSVRecord, Row> rowDeserializer) {
+        this.rowDeserializer = rowDeserializer;
     }
-  }
+
+    @Override
+    public List<Row> apply(FileReader fileReader) {
+        try {
+            var parsed = CSVFormat.DEFAULT.withDelimiter(';')
+                    .withHeader()
+                    .parse(fileReader);
+            return parsed.getRecords()
+                    .stream()
+                    .map(rowDeserializer)
+                    .collect(Collectors.toList());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

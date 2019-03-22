@@ -10,20 +10,53 @@
     <formatter-maven-plugin>2.8.1</formatter-maven-plugin>
     <maven-clean-plugin>3.1.0</maven-clean-plugin>
     <maven-compiler-plugin>3.8.0</maven-compiler-plugin>
-    <maven-deploy-plugin>2.8.2</maven-deploy-plugin>
+    <maven-deploy-plugin>3.0.0-M1</maven-deploy-plugin>
     <maven-failsafe-plugin>3.0.0-M3</maven-failsafe-plugin>
-    <maven-install-plugin>2.5.2</maven-install-plugin>
-    <maven-jar-plugin>3.0.2</maven-jar-plugin>
+    <maven-install-plugin>3.0.0-M1</maven-install-plugin>
+    <maven-jar-plugin>3.1.1</maven-jar-plugin>
     <maven-project-info-reports-plugin>3.0.0</maven-project-info-reports-plugin>
-    <maven-resources-plugin>3.0.2</maven-resources-plugin>
-    <maven-shade-plugin>2.4.1</maven-shade-plugin>
-    <maven-surefire-plugin>2.22.1</maven-surefire-plugin>
-    <sortpom-maven-plugin>2.8.0</sortpom-maven-plugin>
+    <maven-resources-plugin>3.1.0</maven-resources-plugin>
+    <maven-shade-plugin>3.2.1</maven-shade-plugin>
+    <maven-surefire-plugin>3.0.0-M3</maven-surefire-plugin>
+    <sortpom-maven-plugin>3.6.0</sortpom-maven-plugin>
     <docker-maven-plugin>0.28.0</docker-maven-plugin>
   </properties>
   <build>
     <pluginManagement>
       <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>${maven-shade-plugin}</version>
+          <executions>
+            <execution>
+              <phase>package</phase>
+              <goals>
+                <goal>shade</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <createDependencyReducedPom>false</createDependencyReducedPom>
+            <transformers>
+              <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"></transformer>
+              <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                <mainClass>${mainClass}</mainClass>
+              </transformer>
+            </transformers>
+            <!-- https://stackoverflow.com/questions/999489/invalid-signature-file-when-attempting-to-run-a-jar/6743609#6743609 -->
+            <filters>
+              <filter>
+                <artifact>*:*</artifact>
+                <excludes>
+                  <exclude>META-INF/*.SF</exclude>
+                  <exclude>META-INF/*.DSA</exclude>
+                  <exclude>META-INF/*.RSA</exclude>
+                </excludes>
+              </filter>
+            </filters>
+          </configuration>
+        </plugin>
         <plugin>
           <groupId>io.fabric8</groupId>
           <artifactId>docker-maven-plugin</artifactId>
@@ -72,6 +105,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
+        <version>1.6.0</version>
         <executions>
           <execution>
             <id>git submodule update</id>
@@ -144,38 +178,6 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
         <version>${maven-resources-plugin}</version>
-      </plugin>
-      <plugin>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>2.4.1</version>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <createDependencyReducedPom>false</createDependencyReducedPom>
-          <transformers>
-            <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"></transformer>
-            <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-              <mainClass>${mainClass}</mainClass>
-            </transformer>
-          </transformers>
-          <!-- https://stackoverflow.com/questions/999489/invalid-signature-file-when-attempting-to-run-a-jar/6743609#6743609 -->
-          <filters>
-            <filter>
-              <artifact>*:*</artifact>
-              <excludes>
-                <exclude>META-INF/*.SF</exclude>
-                <exclude>META-INF/*.DSA</exclude>
-                <exclude>META-INF/*.RSA</exclude>
-              </excludes>
-            </filter>
-          </filters>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
