@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>sane-plugins</artifactId>
+    <groupId>org.mavenraven</groupId>
+    <version>1</version>
+    <relativePath>parent/pom.xml</relativePath>
+  </parent>
   <groupId>org.mavenraven</groupId>
   <artifactId>csvToMaps</artifactId>
   <version>1.0-SNAPSHOT</version>
@@ -11,13 +17,14 @@
     <mainClass>org.mavenraven.CSVToMaps</mainClass>
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
+    <org.apache.commons.commons-csv>1.6</org.apache.commons.commons-csv>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
   <dependencies>
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-csv</artifactId>
-      <version>1.6</version>
+      <version>${org.apache.commons.commons-csv}</version>
     </dependency>
     <dependency>
       <groupId>com.jillesvangurp</groupId>
@@ -92,71 +99,10 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>git submodule update</id>
-            <phase>initialize</phase>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-            <configuration>
-              <executable>git</executable>
-              <arguments>
-                <argument>submodule</argument>
-                <argument>update</argument>
-                <argument>--init</argument>
-                <argument>--recursive</argument>
-              </arguments>
-            </configuration>
-          </execution>
-        </executions>
-        <inherited>false</inherited>
-      </plugin>
-      <plugin>
-        <groupId>net.revelc.code.formatter</groupId>
-        <artifactId>formatter-maven-plugin</artifactId>
-        <version>2.8.1</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>format</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <configFile>${project.basedir}/formatting-style/formatter-config.xml</configFile>
-          <compilerSource>${maven.compiler.source}</compilerSource>
-          <compilerCompliance>${maven.compiler.source}</compilerCompliance>
-          <compilerTargetPlatform>${maven.compiler.target}</compilerTargetPlatform>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-clean-plugin</artifactId>
-        <version>3.1.0</version>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.0</version>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <version>2.8.2</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>3.0.0-M3</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>integration-test</goal>
-              <goal>verify</goal>
-            </goals>
-          </execution>
-        </executions>
         <configuration>
           <systemPropertyVariables>
             <buildDirectory>${project.build.directory}</buildDirectory>
@@ -165,86 +111,6 @@
             <csvFixtureName>gps_dataset.csv</csvFixtureName>
             <finishedMapFixtureName>finished_map.png</finishedMapFixtureName>
           </systemPropertyVariables>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-install-plugin</artifactId>
-        <version>2.5.2</version>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>3.0.2</version>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-project-info-reports-plugin</artifactId>
-        <version>3.0.0</version>
-      </plugin>
-      <plugin>
-        <artifactId>maven-resources-plugin</artifactId>
-        <version>3.0.2</version>
-      </plugin>
-      <plugin>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>2.4.1</version>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <createDependencyReducedPom>false</createDependencyReducedPom>
-          <transformers>
-            <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"></transformer>
-            <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-              <mainClass>${mainClass}</mainClass>
-            </transformer>
-          </transformers>
-          <!-- exclude signed Manifests -->
-          <filters>
-            <filter>
-              <artifact>*:*</artifact>
-              <excludes>
-                <exclude>META-INF/*.SF</exclude>
-                <exclude>META-INF/*.DSA</exclude>
-                <exclude>META-INF/*.RSA</exclude>
-              </excludes>
-            </filter>
-          </filters>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-site-plugin</artifactId>
-        <version>3.7.1</version>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.22.1</version>
-      </plugin>
-      <plugin>
-        <groupId>com.github.ekryd.sortpom</groupId>
-        <artifactId>sortpom-maven-plugin</artifactId>
-        <version>2.8.0</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>sort</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <createBackupFile>false</createBackupFile>
-          <sortProperties>true</sortProperties>
-          <sortDependencies>scope,artifactId</sortDependencies>
-          <sortPlugins>artifactId</sortPlugins>
-          <expandEmptyElements>true</expandEmptyElements>
         </configuration>
       </plugin>
     </plugins>
