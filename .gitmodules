@@ -1,0 +1,3 @@
+[submodule "formatting-style"]
+	path = formatting-style
+	url = https://github.com/mavenraven/java-formatting-style.git
