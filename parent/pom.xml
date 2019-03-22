@@ -56,7 +56,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
-          <version>3.0.0-M3</version>
+          <version>${maven-failsafe-plugin}</version>
           <executions>
             <execution>
               <goals>
@@ -104,7 +104,7 @@
           </execution>
         </executions>
         <configuration>
-          <configFile>${project.basedir}/styleguide/eclipse-java-google-style.xml</configFile>
+          <configFile>${project.basedir}${file.separator}${styleGuide}</configFile>
           <compilerSource>${maven.compiler.source}</compilerSource>
           <compilerCompliance>${maven.compiler.source}</compilerCompliance>
           <compilerTargetPlatform>${maven.compiler.target}</compilerTargetPlatform>

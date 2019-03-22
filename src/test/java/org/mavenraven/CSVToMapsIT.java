@@ -10,99 +10,76 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import java.io.*;
 import java.nio.file.Paths;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
 
 public class CSVToMapsIT {
 
-    private String jarPath;
-    private String csvFileLocation;
-    private String mapboxAccessToken;
-    private String finishedMapFileLocation;
-    private String deepAIApiKey;
+  private String jarPath;
+  private String csvFileLocation;
+  private String mapboxAccessToken;
+  private String finishedMapFileLocation;
+  private String deepAIApiKey;
 
-    @BeforeEach
-    public void beforeEach() {
-        var buildDir = System.getProperty("buildDirectory");
-        var jarName = System.getProperty("jarName");
-        var baseDir = System.getProperty("baseDir");
-        var testSourceDir = Paths.get(baseDir, "src", "test").toString();
-        var csvFixtureName = System.getProperty("csvFixtureName");
-        var finishedMapFixtureName = System
-                .getProperty("finishedMapFixtureName");
+  @BeforeEach
+  public void beforeEach() {
+    var buildDir = System.getProperty("buildDirectory");
+    var jarName = System.getProperty("jarName");
+    var baseDir = System.getProperty("baseDir");
+    var testSourceDir = Paths.get(baseDir, "src", "test").toString();
+    var csvFixtureName = System.getProperty("csvFixtureName");
+    var finishedMapFixtureName = System.getProperty("finishedMapFixtureName");
 
-        deepAIApiKey = System.getProperty("deepAIApiKey");
-        mapboxAccessToken = System.getProperty("mapboxAccessToken");
-        if (mapboxAccessToken == null || deepAIApiKey == null) {
-            throw new RuntimeException(
-                    "Use 'mvn verify -DmapboxAccessToken=<token> -DdeepAIApiKey=<apiKey>'");
-        }
-
-        jarPath = Paths.get(buildDir, jarName).toString();
-        csvFileLocation = Paths.get(testSourceDir, "resources", csvFixtureName)
-                .toString();
-        finishedMapFileLocation = Paths
-                .get(testSourceDir, "resources", finishedMapFixtureName)
-                .toString();
+    deepAIApiKey = System.getProperty("deepAIApiKey");
+    mapboxAccessToken = System.getProperty("mapboxAccessToken");
+    if (mapboxAccessToken == null || deepAIApiKey == null) {
+      throw new RuntimeException(
+          "Use 'mvn verify -DmapboxAccessToken=<token> -DdeepAIApiKey=<apiKey>'");
     }
 
-    @Test
-    public void itOutputsTheExpectedMap() throws IOException {
-        var rt = Runtime.getRuntime();
-        String[] commands = {
-                "java",
-                "-jar",
-                jarPath,
-                "--mapboxAccessToken",
-                mapboxAccessToken,
-                "--csvFileLocation",
-                csvFileLocation};
-        var proc = rt.exec(commands);
+    jarPath = Paths.get(buildDir, jarName).toString();
+    csvFileLocation = Paths.get(testSourceDir, "resources", csvFixtureName).toString();
+    finishedMapFileLocation =
+        Paths.get(testSourceDir, "resources", finishedMapFixtureName).toString();
+  }
 
-        var resultOutput = IOUtils.toString(
-                new BufferedReader(
-                        new InputStreamReader(proc.getInputStream())));
-        var firstFilePath = resultOutput.lines().findFirst().get();
+  @Test
+  public void itOutputsTheExpectedMap() throws IOException {
+    var rt = Runtime.getRuntime();
+    String[] commands = {"java", "-jar", jarPath, "--mapboxAccessToken", mapboxAccessToken,
+        "--csvFileLocation", csvFileLocation};
+    var proc = rt.exec(commands);
 
-        int similarityScore = getSimilarityScore(
-                firstFilePath,
-                finishedMapFileLocation,
-                deepAIApiKey);
+    var resultOutput =
+        IOUtils.toString(new BufferedReader(new InputStreamReader(proc.getInputStream())));
+    var firstFilePath = resultOutput.lines().findFirst().get();
 
-        assertThat(
-                "Images not similar enough. Compare fixture output to actual output and regen fixture if necessary.",
-                similarityScore,
-                lessThanOrEqualTo(20));
-    }
+    int similarityScore = getSimilarityScore(firstFilePath, finishedMapFileLocation, deepAIApiKey);
 
-    private static int getSimilarityScore(
-            String firstImageLocation,
-            String secondImageLocation,
-            String apiKey) throws IOException {
-        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+    assertThat(
+        "Images not similar enough. Compare fixture output to actual output and regen fixture if necessary.",
+        similarityScore, lessThanOrEqualTo(20));
+  }
 
-        builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-        builder.addBinaryBody("image1", new File(firstImageLocation));
-        builder.addBinaryBody("image2", new File(secondImageLocation));
+  private static int getSimilarityScore(String firstImageLocation, String secondImageLocation,
+      String apiKey) throws IOException {
+    MultipartEntityBuilder builder = MultipartEntityBuilder.create();
 
-        var entity = builder.build();
-        var req = new HttpPost("https://api.deepai.org/api/image-similarity");
-        req.setEntity(entity);
-        req.setHeader("api-key", apiKey);
+    builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+    builder.addBinaryBody("image1", new File(firstImageLocation));
+    builder.addBinaryBody("image2", new File(secondImageLocation));
 
-        var client = HttpClientBuilder.create().build();
-        var resp = client.execute(req);
-        var jsonResp = new JsonParser()
-                .parse(EntityUtils.toString(resp.getEntity()));
+    var entity = builder.build();
+    var req = new HttpPost("https://api.deepai.org/api/image-similarity");
+    req.setEntity(entity);
+    req.setHeader("api-key", apiKey);
 
-        return jsonResp.getAsJsonObject()
-                .get("output")
-                .getAsJsonObject()
-                .get("distance")
-                .getAsInt();
-    }
+    var client = HttpClientBuilder.create().build();
+    var resp = client.execute(req);
+    var jsonResp = new JsonParser().parse(EntityUtils.toString(resp.getEntity()));
+
+    return jsonResp.getAsJsonObject().get("output").getAsJsonObject().get("distance").getAsInt();
+  }
 }
