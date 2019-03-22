@@ -13,46 +13,46 @@ import java.nio.file.Paths;
 import java.util.stream.Collectors;
 
 public class CSVToMaps {
-	public static void main(String[] argv) {
-		Args args = new Args();
+    public static void main(String[] argv) {
+        Args args = new Args();
 
-		JCommander jCommander = JCommander.newBuilder().addObject(args).build();
-		jCommander.setProgramName(CSVToMaps.class.getSimpleName());
-		try {
-			jCommander.parse(argv);
-		} catch (ParameterException e) {
-			e.usage();
-			System.exit(1);
-		}
+        JCommander jCommander = JCommander.newBuilder().addObject(args).build();
+        jCommander.setProgramName(CSVToMaps.class.getSimpleName());
+        try {
+            jCommander.parse(argv);
+        } catch (ParameterException e) {
+            e.usage();
+            System.exit(1);
+        }
 
-		var convertRowsToWalk = new ConvertRowsToWalk();
-		var groupRows = new GroupRows();
-		var getMapUrlForWalk = new GetMapUrlForWalk(args.mapboxAccessToken);
-		var createMapImage = new CreateMapImage(getMapUrlForWalk);
-		var getRowsFromFile = new GetRowsFromFile(new DeserializeRow());
+        var convertRowsToWalk = new ConvertRowsToWalk();
+        var groupRows = new GroupRows();
+        var getMapUrlForWalk = new GetMapUrlForWalk(args.mapboxAccessToken);
+        var createMapImage = new CreateMapImage(getMapUrlForWalk);
+        var getRowsFromFile = new GetRowsFromFile(new DeserializeRow());
 
-		try {
-			var in = new FileReader(args.csvFileLocation);
-			var rows = getRowsFromFile.apply(in);
-			var groups = groupRows.apply(rows);
-			var walks = groups.stream()
-					.map(convertRowsToWalk)
-					.collect(Collectors.toList());
+        try {
+            var in = new FileReader(args.csvFileLocation);
+            var rows = getRowsFromFile.apply(in);
+            var groups = groupRows.apply(rows);
+            var walks = groups.stream()
+                    .map(convertRowsToWalk)
+                    .collect(Collectors.toList());
 
-			int i = 1;
-			var tmpDir = Files.createTempDirectory("csvToMaps").toString();
-			for (var walk : walks) {
-				var image = createMapImage.apply(walk);
+            int i = 1;
+            var tmpDir = Files.createTempDirectory("csvToMaps").toString();
+            for (var walk : walks) {
+                var image = createMapImage.apply(walk);
 
-				var filePath = Paths.get(tmpDir, "map" + i + ".png").toString();
-				i++;
+                var filePath = Paths.get(tmpDir, "map" + i + ".png").toString();
+                i++;
 
-				var file = new File(filePath);
-				ImageIO.write(image, "png", file);
-				System.out.println(file.getAbsolutePath());
-			}
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
+                var file = new File(filePath);
+                ImageIO.write(image, "png", file);
+                System.out.println(file.getAbsolutePath());
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

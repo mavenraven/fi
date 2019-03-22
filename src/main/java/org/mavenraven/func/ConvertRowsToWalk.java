@@ -12,43 +12,52 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class ConvertRowsToWalk implements Function<List<Row>, Walk> {
-	@Override
-	public Walk apply(List<Row> rows) {
-		if (rows.size() < 2) {
-			throw new IllegalArgumentException(
-					"rows must contain at least 2 elements.");
-		}
+    @Override
+    public Walk apply(List<Row> rows) {
+        if (rows.size() < 2) {
+            throw new IllegalArgumentException(
+                    "rows must contain at least 2 elements.");
+        }
 
-		var points = rows.stream()
-				.map(x -> x.getPoint())
-				.collect(Collectors.toList());
-		double totalDistance = 0;
+        var points = rows.stream()
+                .map(x -> x.getPoint())
+                .collect(Collectors.toList());
 
-		Point last = null;
-		for (var point : points) {
-			if (last == null) {
-				last = point;
-				continue;
-			}
-			var distance = GeoGeometry.distance(
-					last.latitude(),
-					last.longitude(),
-					point.latitude(),
-					point.longitude());
-			totalDistance = totalDistance + distance;
-			last = point;
-		}
+        var totalDistance = calculateDistance(points);
+        var totalTime = calculateTime(rows);
 
-		var firstTime = rows.get(0).getDateTime();
+        return new Walk(
+                LineString.fromLngLats(points),
+                totalDistance,
+                totalTime);
+    }
 
-		// not efficient if not array based, but whatever
-		var lastTime = rows.get(rows.size() - 1).getDateTime();
+    private Duration calculateTime(List<Row> rows) {
+        var firstTime = rows.get(0).getDateTime();
 
-		var totalTime = Duration.between(firstTime, lastTime);
+        // not efficient if not array based, but whatever
+        var lastTime = rows.get(rows.size() - 1).getDateTime();
 
-		return new Walk(
-				LineString.fromLngLats(points),
-				totalDistance,
-				totalTime);
-	}
+        return Duration.between(firstTime, lastTime);
+    }
+
+    private double calculateDistance(List<Point> points) {
+        var totalDistance = 0D;
+
+        Point last = null;
+        for (var point : points) {
+            if (last == null) {
+                last = point;
+                continue;
+            }
+            var distance = GeoGeometry.distance(
+                    last.latitude(),
+                    last.longitude(),
+                    point.latitude(),
+                    point.longitude());
+            totalDistance = totalDistance + distance;
+            last = point;
+        }
+        return totalDistance;
+    }
 }
