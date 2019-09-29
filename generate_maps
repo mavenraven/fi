@@ -1,2 +1,2 @@
 #!/bin/sh -eu
-tail -n +2  | ./time_difference | awk 'BEGIN{FS=";"} {if ($1 >= 3600) {print "======"; } print $1}'
+tail -n +2  | ./time_difference | awk 'BEGIN{FS=";"} {if ($1 >= 3600) {print "======"; } print $0}'
