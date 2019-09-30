@@ -1,0 +1,6 @@
+#!/bin/sh -eu
+
+read line
+while read line
+do 
+  

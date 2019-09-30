@@ -5,11 +5,11 @@ time_difference() {
 }
 
 haversine() {
-  LAT_FN=1 LON_FN=2 WALK_FN=10 =ruby -nF";" haversine.rb
+  LAT_FN=1 LON_FN=2 WALK_FN=9 ruby -nF";" haversine.rb
 }
 
 walks() {
-  awk 'BEGIN{FS=";"; count=0} {if (NF >= 3600) {count++} print $0 FS count}'
+  awk 'BEGIN{FS=";"; count=0} {if ($NF >= 3600) {count++} print $0 FS count}'
 }
 
 cat gps_dataset.csv | tail -n+2  | time_difference | walks | haversine 
