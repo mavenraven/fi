@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby -splaF;
+require 'chronic'
+Signal.trap("SIGPIPE", "SYSTEM_DEFAULT") 
+STDOUT.sync = true
+
+BEGIN { last = nil }
+
+if !last
+  last = Chronic.parse($F[0])
+end
+
+difference = Chronic.parse($F[0]) - last
+last = Chronic.parse($F[0])
+$_ = "#{difference}"
