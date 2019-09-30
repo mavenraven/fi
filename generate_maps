@@ -1,2 +1,17 @@
 #!/bin/sh -eu
-tail -n +2  | ./time_difference | awk 'BEGIN{FS=";"} {if ($1 >= 3600) {print "======"; } print $0}'
+
+time_difference() {
+  TIME_FIELD=0 ruby -nF";" time_difference.rb
+}
+
+haversine() {
+  LAT_FIELD=0 LON_FIELD=0 ruby -nF";" haversine.rb
+}
+
+group_walks() {
+  awk -v time_difference_field="$1" 'BEGIN{FS=";"; count=0} {if (time_difference_field >= 3600) {count++} print $0 FS count}'
+}
+
+
+cat gps_data.csv \ | tail -n+2 \ | time_difference | haversine | group_walks
+
