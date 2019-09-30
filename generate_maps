@@ -1,17 +1,15 @@
 #!/bin/sh -eu
 
 time_difference() {
-  TIME_FIELD=0 ruby -nF";" time_difference.rb
+  TIME_FN=0 ruby -nF";" time_difference.rb
 }
 
 haversine() {
-  LAT_FIELD=0 LON_FIELD=0 ruby -nF";" haversine.rb
+  LAT_FN=1 LON_FN=2 WALK_FN=10 =ruby -nF";" haversine.rb
 }
 
-group_walks() {
-  awk -v time_difference_field="$1" 'BEGIN{FS=";"; count=0} {if (time_difference_field >= 3600) {count++} print $0 FS count}'
+walks() {
+  awk 'BEGIN{FS=";"; count=0} {if (NF >= 3600) {count++} print $0 FS count}'
 }
 
-
-cat gps_data.csv \ | tail -n+2 \ | time_difference | haversine | group_walks
-
+cat gps_dataset.csv | tail -n+2  | time_difference | walks | haversine 
