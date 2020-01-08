@@ -1,4 +1,4 @@
-#!/usr/bin/env bash -x
+#!/usr/bin/env bash
 
 haversine() {
   LAT_FN=1 LON_FN=2 WALK_FN=9 ruby -nF";" haversine.rb
@@ -14,16 +14,20 @@ time_difference() {
 
 temp_fifo() {
 local f=$(mktemp -u)
-mkfifo -m 777 "$f"
-echo $f
+mkfifo -m 0777 "$f"
+echo "$f"
 }
 
 
+time_output=$(temp_fifo)
+time_input=$(temp_fifo)
 base=$(temp_fifo)
-time_diff=$(temp_fifo)
 
-cat big.csv | tail -n+2 | tee $base | time_difference | tee $time_diff | head -n 4 & $base #tee $time_diff  & paste $time_diff | head -n 5 
-cat $base | head -n 1
+cat big.csv | tail -n+2 | tee $base $time_input &
+
+#| time_difference #| tee $time_diff & #| head -n 4 & $base #tee $time_diff  & paste $time_diff | head -n 5 
+paste $base $time_input | head -n 10 > out
+#paste $time_diff $base | head -n 10
 
 #cat big.csv | tail -n+2  | awk 'BEGIN{FS=";"} {print $1}' | ./time_difference #| walks | haversine 
 #cat big.csv | tail -n+2  | awk 'BEG./time_difference #| walks | haversine 

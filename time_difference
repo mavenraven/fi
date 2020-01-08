@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby -splaF;
+#!/usr/bin/env ruby -slapF;
 require 'chronic'
 Signal.trap("SIGPIPE", "SYSTEM_DEFAULT") 
 STDOUT.sync = true
