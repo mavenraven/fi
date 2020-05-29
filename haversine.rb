@@ -1,30 +1,26 @@
+#!/usr/bin/env ruby -slap
 require 'haversine'
 require 'bigdecimal'
 require 'bigdecimal/util'
-
 Signal.trap("SIGPIPE", "SYSTEM_DEFAULT") 
+STDOUT.sync = true
+
 BEGIN { last = nil ; last_walk = -1 }
 
-fields = $_.split
-
-lat_field = ENV["LAT_FN"].to_i
-lon_field = ENV["LON_FN"].to_i
-walk_number_field = ENV["WALK_FN"].to_i
-
-walk = fields[walk_number_field]
+walk = $F[0]
 
 if !last
-  last = {lat: fields[lat_field].to_f, lon: fields[lon_field].to_f}
+  last = {lat: $F[1].to_f, lon: $F[2].to_f}
 end
 
-lat = fields[lat_field].to_f
-lon = fields[lon_field].to_f
+lat = $F[1].to_f
+lon = $F[2].to_f
 
 haversine = Haversine.distance(lat, lon, last[:lat], last[:lon]) 
-last = {lat: fields[lat_field].to_f, lon: fields[lon_field].to_f}
+last = {lat: $F[1].to_f, lon: $F[2].to_f}
 if last_walk != walk
-	puts "#{$_.strip}#{$;.source}0"
+  $_ = "#{walk} 0"
         last_walk = walk
 else
-	puts "#{$_.strip}#{$;.source}" + sprintf("%.2f", haversine.to_ft)
+  $_ = "#{walk} " + sprintf("%.2f", haversine.to_ft)
 end
