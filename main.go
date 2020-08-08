@@ -211,6 +211,10 @@ func toUrl(in <-chan walk, apiToken string) <-chan string {
 	return out
 }
 
+type walkMap struct {
+	FileName string `json:"file_name"`
+}
+
 func makeMap(in <-chan string) {
 	for url := range in {
 		go func(url string) {
@@ -237,7 +241,14 @@ func makeMap(in <-chan string) {
 				return
 			}
 
-			fmt.Println(tmp.Name())
+			output, err := json.Marshal(&walkMap{FileName: tmp.Name()})
+
+			if err != nil {
+				fmt.Fprintln(os.Stderr, err)
+				return
+			}
+
+			fmt.Println(string(output))
 		}(url)
 	}
 }
