@@ -20,11 +20,8 @@ func main() {
 	groups := toGroupedRow(rows)
 	walks := toWalk(groups)
 	urls := toUrl(walks, os.Args[1])
-	files := makeMap(urls)
-
-	for f := range files {
-		fmt.Printf("%+v\n", f)
-	}
+	makeMap(urls)
+	select {}
 }
 
 func toCsvRecord(reader io.Reader, delimiter rune) <-chan []string {
@@ -214,12 +211,9 @@ func toUrl(in <-chan walk, apiToken string) <-chan string {
 	return out
 }
 
-func makeMap(in <-chan string) <-chan string {
-	out := make(chan string)
-	go func() {
-		defer close(out)
-
-		for url := range in {
+func makeMap(in <-chan string) {
+	for url := range in {
+		go func(url string) {
 			devNullLogger := log.New(ioutil.Discard, "", 0)
 			c := retryablehttp.NewClient()
 			c.Logger = devNullLogger
@@ -227,7 +221,7 @@ func makeMap(in <-chan string) <-chan string {
 			resp, err := c.Get(url)
 			if err != nil {
 				fmt.Fprintln(os.Stderr, err)
-				continue
+				return
 			}
 
 			defer resp.Body.Close()
@@ -235,17 +229,15 @@ func makeMap(in <-chan string) <-chan string {
 			tmp, err := ioutil.TempFile("", "*.png")
 			if err != nil {
 				fmt.Fprintln(os.Stderr, err)
-				continue
+				return
 			}
 
 			if _, err := io.Copy(tmp, resp.Body); err != nil {
 				fmt.Fprintln(os.Stderr, err)
-				continue
+				return
 			}
 
-			out <- tmp.Name()
-		}
-
-	}()
-	return out
+			fmt.Println(tmp.Name())
+		}(url)
+	}
 }
