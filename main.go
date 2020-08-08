@@ -116,6 +116,10 @@ func toGroupedRow(in <-chan row) <-chan []row {
 
 			diff := r.time.Sub(*last)
 
+			if diff < 0 {
+				diff = diff * -1
+			}
+
 			if diff > time.Hour {
 				out <- group
 				group = make([]row, 0, 1000)
