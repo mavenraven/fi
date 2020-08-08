@@ -19,8 +19,8 @@ func main() {
 	rows := toRow(records)
 	groups := toGroupedRow(rows)
 	walks := toWalk(groups)
-	urls, walks := toUrl(walks, os.Args[1])
-	makeMap(urls, walks)
+	payloads := toUrl(walks, os.Args[1])
+	makeMap(payloads)
 	select {}
 }
 
@@ -136,9 +136,9 @@ func toGroupedRow(in <-chan row) <-chan []row {
 }
 
 type walk struct {
-	LineString       geojson       `json:"geojson"`
-	DistanceTraveled float64       `json:"distance_traveled"`
-	TotalTime        time.Duration `json:"total_time"`
+	LineString       geojson
+	DistanceTraveled float64
+	TotalTime        time.Duration
 }
 
 type geojson struct {
@@ -192,12 +192,15 @@ func distanceTraveledInMi(group []row) float64 {
 	return totalDistance
 }
 
-func toUrl(in <-chan walk, apiToken string) (<-chan string, <-chan walk) {
-	out := make(chan string)
-	walkOut := make(chan walk)
+type payload struct {
+	url  string
+	walk walk
+}
+
+func toUrl(in <-chan walk, apiToken string) <-chan payload {
+	out := make(chan payload)
 	go func() {
 		defer close(out)
-		defer close(walkOut)
 
 		for w := range in {
 			json, err := json.Marshal(w.LineString)
@@ -210,27 +213,27 @@ func toUrl(in <-chan walk, apiToken string) (<-chan string, <-chan walk) {
 			escaped := url.PathEscape(string(json))
 
 			urlStr := fmt.Sprintf("https://api.mapbox.com/styles/v1/mapbox/streets-v10/static/geojson(%s)/auto/1024x1024@2x?access_token=%s&logo=false", escaped, apiToken)
-			out <- urlStr
-			walkOut <- w
+			out <- payload{url: urlStr, walk: w}
 
 		}
 	}()
-	return out, walkOut
+	return out
 }
 
-type walkMap struct {
-	FileName string `json:"file_name"`
-	Walk     walk   `json:"walk"`
+type output struct {
+	FileName         string        `json:"file_name"`
+	DistanceTraveled float64       `json:"distance_traveled"`
+	TotalTime        time.Duration `json:"total_time"`
 }
 
-func makeMap(in <-chan string, walk <-chan walk) {
-	for url := range in {
-		go func(url string) {
+func makeMap(in <-chan payload) {
+	for p := range in {
+		go func(p payload) {
 			devNullLogger := log.New(ioutil.Discard, "", 0)
 			c := retryablehttp.NewClient()
 			c.Logger = devNullLogger
 
-			resp, err := c.Get(url)
+			resp, err := c.Get(p.url)
 			if err != nil {
 				fmt.Fprintln(os.Stderr, err)
 				return
@@ -249,7 +252,11 @@ func makeMap(in <-chan string, walk <-chan walk) {
 				return
 			}
 
-			output, err := json.Marshal(&walkMap{FileName: tmp.Name(), Walk: <-walk})
+			output, err := json.Marshal(&output{
+				FileName:         tmp.Name(),
+				DistanceTraveled: p.walk.DistanceTraveled,
+				TotalTime:        p.walk.TotalTime,
+			})
 
 			if err != nil {
 				fmt.Fprintln(os.Stderr, err)
@@ -257,6 +264,6 @@ func makeMap(in <-chan string, walk <-chan walk) {
 			}
 
 			fmt.Println(string(output))
-		}(url)
+		}(p)
 	}
 }
