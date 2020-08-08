@@ -99,30 +99,34 @@ func toRow(in <-chan []string) <-chan row {
 	return out
 }
 
-//We need to eventually turn our rows into a linestring to send to mapbox, so it doesn't matter if we build up the array in memory
-//at this point.
 func toGroupedRow(in <-chan row) <-chan []row {
 	out := make(chan []row)
+	/*
+		Chosen arbitrarily.
+		Needed to prevent loading a malicious or malformed file into memory with billions of rows in the same group.
+	*/
+	maxGroupSize := 10000
 	go func() {
 		defer close(out)
 
 		var last *time.Time
-		group := make([]row, 0, 1000)
+		group := make([]row, 0, maxGroupSize)
 		for r := range in {
+			if len(group) > maxGroupSize {
+				err := fmt.Errorf("group exceeded max size of %v", maxGroupSize)
+				fmt.Fprintln(os.Stderr, err)
+				group = make([]row, 0, maxGroupSize)
+				continue
+			}
+			// For the first row.
 			if last == nil {
 				timeCopy := r.time
 				last = &timeCopy
 			}
 
-			diff := r.time.Sub(*last)
-
-			if diff < 0 {
-				diff = diff * -1
-			}
-
-			if diff > time.Hour {
+			if !inSameWalk(*last, r.time) {
 				out <- group
-				group = make([]row, 0, 1000)
+				group = make([]row, 0, maxGroupSize)
 			}
 
 			group = append(group, r)
@@ -133,6 +137,16 @@ func toGroupedRow(in <-chan row) <-chan []row {
 		out <- group
 	}()
 	return out
+}
+
+func inSameWalk(last, current time.Time) bool {
+	diff := current.Sub(last)
+
+	if diff < 0 {
+		diff = diff * -1
+	}
+
+	return diff > time.Hour
 }
 
 type walk struct {
