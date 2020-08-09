@@ -32,6 +32,7 @@ func toCsvRecord(reader io.Reader, delimiter rune) <-chan []string {
 		No need to overspecify.
 	*/
 	csvReader.FieldsPerRecord = -1
+	//TODO: max line length, csv checker is happy to try to load gigabyte long lines
 
 	out := make(chan []string)
 	go func() {
@@ -102,10 +103,11 @@ func toRow(in <-chan []string) <-chan row {
 func toGroupedRow(in <-chan row) <-chan []row {
 	out := make(chan []row)
 	/*
-		Chosen arbitrarily.
-		Needed to prevent loading a malicious or malformed file into memory with billions of rows in the same group.
+		Chosen somewhat arbitrarily.
+		The data of a group needs to be small enough to fit inside a URL.
+		Also needed to prevent loading a malicious or malformed file into memory with billions of rows in the same group.
 	*/
-	maxGroupSize := 10000
+	maxGroupSize := 100
 	go func() {
 		defer close(out)
 
